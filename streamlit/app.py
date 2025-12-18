@@ -36,6 +36,7 @@ st.set_page_config(
 API_URL = "http://api:8000"  # Docker service name
 # For local development, use: 
 # API_URL = "http://localhost:8000"
+# API_URL = os.getenv('API_URL', 'http://api:8000')
 
 # Custom CSS
 st.markdown("""
