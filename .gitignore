@@ -56,7 +56,7 @@ database/*.db-journal
 *.sqlite3
 
 # Models (too large for git)
-models/*.pkl
+# models/*.pkl
 models/*.joblib
 models/*.h5
 models/*.pt

@@ -11,6 +11,19 @@ import plotly.express as px
 from datetime import datetime
 import json
 
+
+# extracting metrics from the best model
+metrics_details = pd.read_csv('experiment_results.csv')
+# print(df.columns)
+df_sorted = metrics_details.sort_values(by='f1_score', ascending=False)
+
+# 2. Extract metrics from the top row for columns 'c' and 'd'
+top_row = df_sorted.iloc[0]
+f1_score = top_row['f1_score']
+accuracy = top_row['accuracy']
+precision = top_row['precision']
+recall = top_row['recall']
+
 # Page configuration
 st.set_page_config(
     page_title="Customer Churn Prediction",
@@ -21,7 +34,8 @@ st.set_page_config(
 
 # API Configuration
 API_URL = "http://api:8000"  # Docker service name
-# For local development, use: API_URL = "http://localhost:8000"
+# For local development, use: 
+# API_URL = "http://localhost:8000"
 
 # Custom CSS
 st.markdown("""
@@ -168,12 +182,12 @@ def main():
     
     # Sidebar
     with st.sidebar:
-        st.image("https://via.placeholder.com/300x100/1f77b4/ffffff?text=Retail+Analytics", use_column_width=True)
+        
         st.title("📊 Navigation")
         
         page = st.radio(
             "Select Page",
-            ["🏠 Home", "🔮 Single Prediction", "📊 Batch Prediction", "ℹ️ About"]
+            ["🏠 Home", "🔮 Single Prediction", "ℹ️ About"]
         )
         
         st.markdown("---")
@@ -196,8 +210,6 @@ def main():
         show_home_page()
     elif page == "🔮 Single Prediction":
         show_prediction_page()
-    elif page == "📊 Batch Prediction":
-        show_batch_prediction_page()
     elif page == "ℹ️ About":
         show_about_page()
 
@@ -207,27 +219,28 @@ def show_home_page():
     
     col1, col2, col3 = st.columns(3)
     
+    
     with col1:
-        st.markdown("""
+         st.markdown("""
         <div class="metric-card">
-            <h3>🎯 Accurate Predictions</h3>
-            <p>Machine learning model trained on 16 experiments with F1-score optimization</p>
+            <h3 style="color: black;">🎯 Accurate Predictions</h3>
+            <p style="color: black;">Machine learning model trained on 16 experiments with F1-score optimization</p>
         </div>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
         <div class="metric-card">
-            <h3>⚡ Real-time Analysis</h3>
-            <p>Get instant churn predictions through our FastAPI backend</p>
+            <h3 style="color: black;">⚡ Real-time Analysis</h3>
+            <p style="color: black;">Get instant churn predictions through our FastAPI backend</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         st.markdown("""
         <div class="metric-card">
-            <h3>📈 Actionable Insights</h3>
-            <p>Identify high-risk customers and take preventive action</p>
+            <h3 style="color: black;">📈 Actionable Insights</h3>
+            <p style="color: black;">Identify high-risk customers and take preventive action</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -236,21 +249,20 @@ def show_home_page():
     st.subheader("🚀 Quick Start")
     st.markdown("""
     1. **Single Prediction**: Enter customer details manually for instant prediction
-    2. **Batch Prediction**: Upload CSV file to predict churn for multiple customers
-    3. **Risk Levels**: 
+    2. **Risk Levels**: 
         - 🟢 Low Risk (< 30%)
         - 🟡 Medium Risk (30-70%)
         - 🔴 High Risk (> 70%)
     """)
     
     st.subheader("📊 Model Performance")
-    
+   
     # Mock performance metrics (replace with actual from experiments)
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("F1-Score", "0.85", "±0.03")
-    col2.metric("Accuracy", "0.87", "±0.02")
-    col3.metric("Precision", "0.83", "±0.04")
-    col4.metric("Recall", "0.87", "±0.03")
+    col1.metric("F1-Score", f"{f1_score:.2f}", "±0.03")
+    col2.metric("Accuracy", f"{accuracy:.2f}", "±0.02")
+    col3.metric("Precision", f"{precision:.2f}", "±0.04")
+    col4.metric("Recall", f"{recall:.2f}", "±0.03")
 
 def show_prediction_page():
     """Display single prediction page"""
@@ -371,55 +383,11 @@ def show_prediction_page():
                 - Send new product updates
                 """)
 
-def show_batch_prediction_page():
-    """Display batch prediction page"""
-    st.header("📊 Batch Customer Prediction")
-    
-    st.markdown("Upload a CSV file with customer data to predict churn for multiple customers")
-    
-    # Show expected format
-    with st.expander("📋 View Expected CSV Format"):
-        sample_df = pd.DataFrame({
-            'Recency': [30, 60, 15],
-            'Frequency': [5, 3, 8],
-            'Monetary': [500, 200, 800],
-            'InvoiceNo_nunique': [5, 3, 8],
-            'Quantity_sum': [50, 20, 80],
-            'Quantity_mean': [10, 7, 10],
-            'TotalPrice_sum': [500, 200, 800],
-            'TotalPrice_mean': [100, 67, 100],
-            'TotalPrice_std': [0, 0, 0],
-            'StockCode_nunique': [10, 5, 15],
-            'CustomerLifetime': [180, 90, 365],
-            'AvgDaysBetweenPurchases': [30, 30, 45]
-        })
-        st.dataframe(sample_df)
-    
-    # File uploader
-    uploaded_file = st.file_uploader("Choose CSV file", type=['csv'])
-    
-    if uploaded_file is not None:
-        try:
-            df = pd.read_csv(uploaded_file)
-            st.success(f"✅ Loaded {len(df)} customers")
-            
-            st.subheader("Preview Data")
-            st.dataframe(df.head())
-            
-            if st.button("🔮 Run Batch Prediction", use_container_width=True):
-                with st.spinner("Processing batch prediction..."):
-                    # Here you would call the batch prediction endpoint
-                    st.info("Batch prediction feature coming soon!")
-                    st.info("For now, use the Single Prediction page for individual predictions")
-        
-        except Exception as e:
-            st.error(f"Error reading file: {str(e)}")
-
 def show_about_page():
     """Display about page"""
     st.header("ℹ️ About This System")
     
-    st.markdown("""
+    st.markdown(f"""
     ### 🎯 Project Overview
     This Customer Churn Prediction System uses machine learning to identify customers
     at risk of churning in an online retail environment.
@@ -456,11 +424,11 @@ def show_about_page():
     
     ### 📈 Model Performance
     The best performing model achieved:
-    - F1-Score: ~0.85
-    - Accuracy: ~0.87
-    - Precision: ~0.83
-    - Recall: ~0.87
-    
+    - F1-Score: ~{f1_score:.2f}
+    - Accuracy: ~{accuracy:.2f}
+    - Precision: ~{precision:.2f}
+    - Recall: ~{recall:.2f}
+
     ### 📝 License
     This project is for educational purposes.
     """)
