@@ -10,7 +10,7 @@ import json
 import pickle
 from dotenv import load_dotenv
 import dagshub
-dagshub.init(repo_owner='shubhamkragrawal', repo_name='online_retail', mlflow=True)
+# dagshub.init(repo_owner='shubhamkragrawal', repo_name='online_retail', mlflow=True)
 
 
 
