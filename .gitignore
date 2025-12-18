@@ -50,13 +50,13 @@ data/raw/*.xlsx
 data/processed/*.parquet
 
 # Database
-# database/*.db
+database/*.db
 database/*.db-journal
 *.sqlite
 *.sqlite3
 
 # Models (too large for git)
-# models/*.pkl
+models/*.pkl
 models/*.joblib
 models/*.h5
 models/*.pt
