@@ -15,7 +15,7 @@ plt.rcParams['figure.figsize'] = (12, 6)
 print("Libraries imported successfully!")
 
 # Cell 2: Load Data from Database
-conn = sqlite3.connect('../database/retail.db')
+conn = sqlite3.connect('database/retail.db')
 
 # Load transaction data
 query = """
@@ -136,7 +136,7 @@ print("Top 20 Products by Revenue:")
 print(product_stats)
 
 # Cell 10: Load ML Dataset
-ml_df = pd.read_csv('../data/processed/ml_dataset.csv')
+ml_df = pd.read_csv('data/processed/ml_dataset.csv')
 
 print(f"ML Dataset shape: {ml_df.shape}")
 print("\nFeatures:", ml_df.columns.tolist())
