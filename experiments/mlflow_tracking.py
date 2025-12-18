@@ -10,9 +10,6 @@ import json
 import pickle
 from dotenv import load_dotenv
 import dagshub
-# dagshub.init(repo_owner='shubhamkragrawal', repo_name='online_retail', mlflow=True)
-
-
 
 # Load environment variables
 load_dotenv()
@@ -27,7 +24,7 @@ class MLflowTracker:
         """Configure MLflow with DagsHub"""
         # DagsHub configuration (set these in .env file)
         dagshub_user = os.getenv('DAGSHUB_USER', 'your-username')
-        dagshub_repo = os.getenv('DAGSHUB_REPO', 'online-retail')
+        dagshub_repo = os.getenv('DAGSHUB_REPO', 'retail-churn-classification')
         dagshub_token = os.getenv('DAGSHUB_TOKEN', '')
         
         # Set tracking URI
@@ -35,6 +32,11 @@ class MLflowTracker:
             tracking_uri = f"https://dagshub.com/{dagshub_user}/{dagshub_repo}.mlflow"
             os.environ['MLFLOW_TRACKING_USERNAME'] = dagshub_token
             os.environ['MLFLOW_TRACKING_PASSWORD'] = dagshub_token
+            
+            print(f"✓ MLflow tracking configured")
+            print(f"  Tracking URI: {tracking_uri}")
+            print(f"  User: {dagshub_user}")
+            print(f"  Repo: {dagshub_repo}")
         else:
             # Local tracking if no DagsHub credentials
             tracking_uri = "file:./mlruns"
@@ -42,11 +44,15 @@ class MLflowTracker:
             print("   Set DAGSHUB_USER, DAGSHUB_REPO, and DAGSHUB_TOKEN in .env file")
         
         mlflow.set_tracking_uri(tracking_uri)
-        mlflow.set_experiment(self.experiment_name)
         
-        print(f"✓ MLflow tracking configured")
-        print(f"  Tracking URI: {tracking_uri}")
-        print(f"  Experiment: {self.experiment_name}")
+        # Try to set experiment, create if doesn't exist
+        try:
+            mlflow.set_experiment(self.experiment_name)
+            print(f"  Experiment: {self.experiment_name}")
+        except Exception as e:
+            print(f"  Note: {e}")
+            print(f"  Creating new experiment: {self.experiment_name}")
+            mlflow.create_experiment(self.experiment_name)
         
     def log_experiment(self, result_dict, model_path):
         """Log a single experiment to MLflow"""
