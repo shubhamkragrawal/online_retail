@@ -9,6 +9,10 @@ import os
 import json
 import pickle
 from dotenv import load_dotenv
+import dagshub
+dagshub.init(repo_owner='shubhamkragrawal', repo_name='online_retail', mlflow=True)
+
+
 
 # Load environment variables
 load_dotenv()
@@ -23,7 +27,7 @@ class MLflowTracker:
         """Configure MLflow with DagsHub"""
         # DagsHub configuration (set these in .env file)
         dagshub_user = os.getenv('DAGSHUB_USER', 'your-username')
-        dagshub_repo = os.getenv('DAGSHUB_REPO', 'retail-churn-classification')
+        dagshub_repo = os.getenv('DAGSHUB_REPO', 'online-retail')
         dagshub_token = os.getenv('DAGSHUB_TOKEN', '')
         
         # Set tracking URI
