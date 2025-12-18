@@ -176,11 +176,7 @@ def main():
     # Check if CSV exists
     csv_path = 'data/raw/online_retail.csv'
     if not os.path.exists(csv_path):
-        print(f"✗ Error: CSV file not found at {csv_path}")
-        print("\nPlease download the UCI Online Retail dataset from:")
-        print("https://archive.ics.uci.edu/ml/datasets/online+retail")
-        print("or Kaggle: https://www.kaggle.com/datasets/lakshmi25npathi/online-retail-dataset")
-        print("\nPlace the file in: data/raw/online_retail.csv")
+        print(f" Error: CSV file not found at {csv_path}")
         return
     
     # Create database
